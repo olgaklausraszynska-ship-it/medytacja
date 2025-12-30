@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Medytacja oddechowa</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #6bd1ff;
+      margin: 30px;
+      transition: all 4s ease-in-out;
+    }
+
+    #instruction {
+      font-size: 2rem;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #6bd1ff;
+      border: none;
+      color: #1e1e2f;
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4cb3dd;
+    }
+
+    .word {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0;
+      animation-duration: 4s;
+      animation-fill-mode: forwards;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    @keyframes breatheIn {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 1;
+      }
+    }
+
+    @keyframes breatheOut {
+      0% {
+        transform: scale(1.5);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0.2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ćwiczenie oddechowe</h1>
+  <div id="circle"></div>
+  <div id="instruction">Kliknij "Start", aby rozpocząć</div>
+  <button onclick="startBreathing()">Start</button>
+
+  <script>
+    const circle = document.getElementById('circle');
+    const instruction = document.getElementById('instruction');
+
+    const positiveWords = ['energia', 'siła', 'miłość', 'pozytywna energia', 'światło'];
+    const negativeWords = ['stres', 'nienawiść', 'zawiść', 'zmęczenie', 'lęk'];
+
+    const phases = [
+      { text: 'Wdech', scale: 3, type: 'in' },
+      { text: 'Zatrzymaj', scale: 3, type: 'pause' },
+      { text: 'Wydech', scale: 1, type: 'out' },
+      { text: 'Zatrzymaj', scale: 1, type: 'pause' },
+    ];
+
+    let currentPhase = 0;
+
+    function startBreathing() {
+      runPhase();
+      setInterval(runPhase, 4000);
+    }
+
+    function runPhase() {
+      const phase = phases[currentPhase];
+      instruction.textContent = phase.text;
+      circle.style.transform = `scale(${phase.scale})`;
+
+      if (phase.type === 'in') {
+        showWords(positiveWords, 'breatheIn');
+      } else if (phase.type === 'out') {
+        showWords(negativeWords, 'breatheOut');
+      }
+
+      currentPhase = (currentPhase + 1) % phases.length;
+    }
+
+    function showWords(wordsArray, animationName) {
+      const word = wordsArray[Math.floor(Math.random() * wordsArray.length)];
+      const el = document.createElement('div');
+      el.textContent = word;
+      el.classList.add('word');
+      el.style.animationName = animationName;
+
+      // Pozycja na środku
+      el.style.top = `${window.innerHeight / 2 - 20 + (Math.random() * 40 - 20)}px`;
+      el.style.left = `${window.innerWidth / 2 - 50 + (Math.random() * 100 - 50)}px`;
+
+      document.body.appendChild(el);
+
+      setTimeout(() => {
+        el.remove();
+      }, 4000); // usunięcie po zakończeniu animacji
+    }
+  </script>
+
+</body>
+</html>
